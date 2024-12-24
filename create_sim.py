@@ -10,6 +10,7 @@ from models.models_nca import NCA
 from models.models_plenia import ParticleLenia
 from models.models_plife import ParticleLife
 from models.models_plife_plus import ParticleLifePlus
+from models.models_gol import GameOfLife
 
 import evosax
 
@@ -54,13 +55,15 @@ def create_sim(sim_name):
         sim = NCA(grid_size=128, d_state=1, p_drop=0.5, dt=0.1)
     elif sim_name=='nca_d3':
         sim = NCA(grid_size=128, d_state=3, p_drop=0.5, dt=0.1)
-    elif sim_name.startswith('plife_ba;'): # plife_ba;n=1000;k=1
-        a, b, c = sim_name.split(';')
-        n = int(b.split('=')[-1])
-        k = int(c.split('=')[-1])
-        sim = ParticleLife(n_particles=n, n_colors=k, search_space="beta+alpha", dt=2e-3, render_radius=1e-2)  
-    elif sim_name=='plife_ba_c3':
-        sim = ParticleLife(n_particles=5000, n_colors=3, search_space="beta+alpha", dt=2e-3, render_radius=1e-2)  
+    elif sim_name=='gol':
+        sim = GameOfLife(grid_size=64)
+    # elif sim_name.startswith('plife_ba;'): # plife_ba;n=1000;k=1
+    #     a, b, c = sim_name.split(';')
+    #     n = int(b.split('=')[-1])
+    #     k = int(c.split('=')[-1])
+    #     sim = ParticleLife(n_particles=n, n_colors=k, search_space="beta+alpha", dt=2e-3, render_radius=1e-2)  
+    # elif sim_name=='plife_ba_c3':
+    #     sim = ParticleLife(n_particles=5000, n_colors=3, search_space="beta+alpha", dt=2e-3, render_radius=1e-2)  
     else:
         raise ValueError(f"Unknown simulation name: {sim_name}")
     sim.sim_name = sim_name

@@ -22,24 +22,24 @@ from create_sim import create_sim, rollout_and_embed_simulation, FlattenSimulati
 parser = argparse.ArgumentParser()
 group = parser.add_argument_group("meta")
 group.add_argument("--seed", type=int, default=0)
-group.add_argument("--save_dir", type=str, default=None)
+group.add_argument("--save_dir", type=str, default=None) # path to save results to
 
 group = parser.add_argument_group("model")
-group.add_argument("--sim", type=str, default='boids')
+group.add_argument("--sim", type=str, default='boids') # substrate name
 
 group = parser.add_argument_group("data")
-group.add_argument("--n_rollout_imgs", type=int, default=1)
-group.add_argument("--prompts", type=str, default="an artificial cell,a bacterium")
-group.add_argument("--clip_model", type=str, default="clip-vit-base-patch32") # clip-vit-base-patch32 or clip-vit-large-patch14
-group.add_argument("--coef_prompt", type=float, default=1.)
-group.add_argument("--coef_softmax", type=float, default=0.)
-group.add_argument("--coef_novelty", type=float, default=0.)
+group.add_argument("--n_rollout_imgs", type=int, default=1) # number of images to render during one simulation rollout
+group.add_argument("--prompts", type=str, default="an artificial cell,a bacterium") # prompts to optimize for
+group.add_argument("--clip_model", type=str, default="clip-vit-base-patch32") # clip-vit-base-patch32 or clip-vit-large-patch14 (don't touch this)
+group.add_argument("--coef_prompt", type=float, default=1.) # coefficient for prompt loss
+group.add_argument("--coef_softmax", type=float, default=0.) # coefficient for softmax loss (only for multiple temporal prompts)
+group.add_argument("--coef_novelty", type=float, default=0.) # coefficient for open-endedness loss (only for single prompt)
 
 group = parser.add_argument_group("optimization")
-group.add_argument("--bs", type=int, default=1)
-group.add_argument("--pop_size", type=int, default=16)
-group.add_argument("--n_iters", type=int, default=10000)
-group.add_argument("--sigma", type=float, default=1.)
+group.add_argument("--bs", type=int, default=1) # number of init states to run simulation for
+group.add_argument("--pop_size", type=int, default=16) # population size for Sep-CMA-ES
+group.add_argument("--n_iters", type=int, default=10000) # number of iterations
+group.add_argument("--sigma", type=float, default=0.1) # mutation rate
 
 def parse_args(*args, **kwargs):
     args = parser.parse_args(*args, **kwargs)
@@ -74,9 +74,6 @@ def main(args):
             scores = z_text @ z.T # P T (square)
             loss_prompt = -scores[jnp.arange(len(scores)), jnp.arange(len(scores))].mean()
 
-
-
-            # loss_softmax = (jax.nn.softmax(scores*100, axis=-1).mean() + jax.nn.softmax(scores*100, axis=-2).mean())/2.
             loss_sm1 = jax.nn.softmax(scores*100, axis=-1)
             loss_sm2 = jax.nn.softmax(scores*100, axis=-2)
             loss_sm1 = -jnp.log(loss_sm1[jnp.arange(len(scores)), jnp.arange(len(scores))])
@@ -120,22 +117,6 @@ def main(args):
             util.save_pkl(args.save_dir, "data", data_save)
             best = jax.tree.map(lambda x: np.array(x), (es_state.best_member, es_state.best_fitness))
             util.save_pkl(args.save_dir, "best", best)
-
-            # params = param_reshaper.reshape_single(es_state.best_member)
-            # vid = inference_video(rng, params)
-            # vid = np.array((vid*255).astype(jnp.uint8))
-            # util.save_pkl(args.save_dir, "vid", vid)
-            # imageio.mimwrite(f'{args.save_dir}/vid.mp4', vid, fps=30, codec='libx264')
-
-            # plt.figure(figsize=(10, 5))
-            # plt.subplot(211)
-            # plt.plot(data_save['best_loss'], color='green', label='best loss')
-            # plt.plot(data_save['generation_loss'], color='lightgreen', label='generation loss')
-            # plt.axhline(data_save['generation_loss'][0], color='r', linestyle='dashed', label='initial loss')
-            # plt.legend()
-            # plt.subplot(212); plt.imshow(rearrange(vid[::(vid.shape[0]//8), :, :, :], "T H W D -> (H) (T W) D"))
-            # plt.savefig(f'{args.save_dir}/overview_{i_iter:06d}.png')
-            # plt.close()
 
 if __name__ == '__main__':
     main(parse_args())

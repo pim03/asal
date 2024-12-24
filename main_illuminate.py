@@ -22,21 +22,21 @@ from create_sim import create_sim, rollout_and_embed_simulation, FlattenSimulati
 parser = argparse.ArgumentParser()
 group = parser.add_argument_group("meta")
 group.add_argument("--seed", type=int, default=0)
-group.add_argument("--save_dir", type=str, default=None)
+group.add_argument("--save_dir", type=str, default=None) # directory to save results
 
 group = parser.add_argument_group("model")
-group.add_argument("--sim", type=str, default='boids')
+group.add_argument("--sim", type=str, default='boids') # substrate name
 
 group = parser.add_argument_group("data")
-group.add_argument("--clip_model", type=str, default="clip-vit-base-patch32") # clip-vit-base-patch32 or clip-vit-large-patch14
+group.add_argument("--clip_model", type=str, default="clip-vit-base-patch32") # clip-vit-base-patch32 or clip-vit-large-patch14 (don't touch this)
 
 group = parser.add_argument_group("optimization")
-group.add_argument("--k_nbrs", type=int, default=2)
-group.add_argument("--bs", type=int, default=32)
-group.add_argument("--pop_size", type=int, default=1024)
-group.add_argument("--n_iters", type=int, default=10000)
-group.add_argument("--sigma1", type=float, default=0.1)
-group.add_argument("--sigma2", type=float, default=0.)
+group.add_argument("--k_nbrs", type=int, default=2) # k_neighbors for nearest neighbor calculation (2 is best)
+group.add_argument("--bs", type=int, default=32) # number of children to generate
+group.add_argument("--pop_size", type=int, default=1024) # population size for the genetic algorithm
+group.add_argument("--n_iters", type=int, default=10000) # number of iterations
+group.add_argument("--sigma1", type=float, default=0.1) # mutation rate
+group.add_argument("--sigma2", type=float, default=0.) # differential evolution lerp rate, just keep it at 0., doesn't work too well.
 
 
 def parse_args(*args, **kwargs):
@@ -123,16 +123,5 @@ def main(args):
             # print(jax.tree_map(lambda x: x.shape, pop))
             util.save_pkl(args.save_dir, "pop", jax.tree.map(lambda x: np.array(x), pop))
             
-            # plt.figure(figsize=(10, 5))
-            # plt.subplot(211)
-            # plt.plot(data_save['loss'], color='green', label='loss')
-            # plt.axhline(data_save['loss'][0], color='r', linestyle='dashed', label='initial loss')
-            # plt.legend()
-            # img = pop_save['img_final'] # pop_size H W C
-            # img = jnp.pad(img, ((0, 0), (1, 1), (1, 1), (0, 0)), mode='constant', constant_values=.5)
-            # plt.subplot(212); plt.imshow(rearrange(img[::(img.shape[0]//16), :, :, :], "(R C) H W D -> (R H) (C W) D", R=2))
-            # plt.savefig(f'{args.save_dir}/overview_{i_iter:06d}.png')
-            # plt.close()
-
 if __name__ == '__main__':
     main(parse_args())

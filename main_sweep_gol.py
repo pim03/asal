@@ -22,23 +22,24 @@ import util
 from clip_jax import MyFlaxCLIP
 from models.models_gol import GameOfLife
 
+# this script only measures the open-endedness/novelty score of the Game of Life substrate simulations.
 parser = argparse.ArgumentParser()
 group = parser.add_argument_group("meta")
 group.add_argument("--seed", type=int, default=0)
-group.add_argument("--save_dir", type=str, default=None)
+group.add_argument("--save_dir", type=str, default=None) # the directory to save results to
 
 group = parser.add_argument_group("model")
-group.add_argument("--grid_size", type=int, default=64)
-group.add_argument("--rollout_steps", type=int, default=4096)
+group.add_argument("--grid_size", type=int, default=64) # grid size of the simulation
+group.add_argument("--rollout_steps", type=int, default=4096) # number of steps to rollout simulation for
 
 group = parser.add_argument_group("data")
-group.add_argument("--n_rollout_imgs", type=int, default=32)
-group.add_argument("--clip_model", type=str, default="clip-vit-base-patch32") # clip-vit-base-patch32 or clip-vit-large-patch14
+group.add_argument("--n_rollout_imgs", type=int, default=32) # number of images to render during the rollout
+group.add_argument("--clip_model", type=str, default="clip-vit-base-patch32") # clip-vit-base-patch32 or clip-vit-large-patch14 (don't change this)
 
 group = parser.add_argument_group("optimization")
-group.add_argument("--bs", type=int, default=512)
+group.add_argument("--bs", type=int, default=16) # number of init states to run for each simulation
 group.add_argument("--start", type=int, default=0) # start range for params search
-group.add_argument("--end", type=int, default=262144) # end range for params search
+group.add_argument("--end", type=int, default=262144) # end range for params search, 0-262144 is the entire substrate.
 
 
 def parse_args(*args, **kwargs):
@@ -56,13 +57,13 @@ def main(args):
     def calc_loss(rng, params):
         rollout_data = rollout_and_embed_simulation(rng, params, sim=sim, clip_model=clip_model, rollout_steps=args.rollout_steps, n_rollout_imgs=args.n_rollout_imgs)
 
-        # --------- CLIP Novelty ---------
+        # --------- CLIP OE score --------- 
         z = rollout_data['z'] # T D
         scores_novelty = (z @ z.T) # T T
         scores_novelty = jnp.tril(scores_novelty, k=-1)
         loss_novelty = scores_novelty.max(axis=-1) # T
 
-        # --------- Manual Novelty ---------
+        # --------- Manual OE score (based on pixel metric) ---------
         state_vid = rollout_data['state_vid'] # T H W
         scores_novelty = 1.-jnp.abs(state_vid[None, :] - state_vid[:, None]).mean(axis=(-1, -2)) # T T
         scores_novelty = jnp.tril(scores_novelty, k=-1)

@@ -25,8 +25,8 @@ class GameOfLife():
     def __init__(self, grid_size=64):
         self.grid_size = grid_size
 
-        self.params_max = 2**18 - 1
-        self.params_gol = 6152
+        self.params_max = 2**18
+        self.params_cgol = 6152 # Conway's Game of Life
 
     def default_params(self, rng):
         return jax.random.randint(rng, (), minval=0, maxval=self.params_max)
@@ -51,12 +51,12 @@ class GameOfLife():
             img = jax.image.resize(img, (img_size, img_size, 3), method='nearest')
         return img
 
-class GameOfLifeInit():
+class GameOfLifeInit(): # for testing search over random initial states of cgol
     def __init__(self, grid_size=64):
         self.grid_size = grid_size
 
         self.params_dyn = 6152
-        # self.params_dyn = int2binary(self.params_gol)
+        # self.params_dyn = int2binary(self.params_cgol)
         # print(self.params_dyn)
 
     def default_params(self, rng):

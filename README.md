@@ -32,6 +32,13 @@ If you encounter any issues installing this environment, please [manually instal
 Then manually install the following libraries:
 - flax==0.9.0
 - transformers==4.45.2
+- tqdm==4.66.5
+- einops==0.8.0
+- evosax==0.1.6
+- imageio==2.35.1
+- imageio-ffmpeg==0.5.1
+- matplotlib==3.9.2
+- pillow==10.4.0
 
 ## Running ASAL
 Check out [asal.ipynb](asal.ipynb)
