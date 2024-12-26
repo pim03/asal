@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <a href="https://sakana.ai/asal">
-    <img width="600" alt="Discovered ALife Simulations" src="https://pub.sakana.ai/asal/assets/png/cover_video_square-min.png"></a><br>
+    <img width="600" alt="Discovered ALife Simulations" src="https://pub.sakana.ai/asal_blog_assets/cover_video_square-min.png"></a><br>
 </h1>
 
 
@@ -22,6 +22,11 @@ $^1$ MIT, $^2$ Sakana AI, $^3$ OpenAI, $^4$ The Swiss AI Lab IDSIA, $^5$ Indepen
 
 ## Abstract
 With the recent Nobel Prize awarded for radical advances in protein discovery, foundation models (FMs) for exploring large combinatorial spaces promise to revolutionize many scientific fields. Artificial Life (ALife) has not yet integrated FMs, thus presenting a major opportunity for the field to alleviate the historical burden of relying chiefly on manual design and trial-and-error to discover the configurations of lifelike simulations. This paper presents, for the first time, a successful realization of this opportunity using vision-language FMs. The proposed approach, called *Automated Search for Artificial Life* (ASAL), (1) finds simulations that produce target phenomena, (2) discovers simulations that generate temporally open-ended novelty, and (3) illuminates an entire space of interestingly diverse simulations. Because of the generality of FMs, ASAL works effectively across a diverse range of ALife substrates including Boids, Particle Life, Game of Life, Lenia, and Neural Cellular Automata. A major result highlighting the potential of this technique is the discovery of previously unseen Lenia and Boids lifeforms, as well as cellular automata that are open-ended like Conway’s Game of Life. Additionally, the use of FMs allows for the quantification of previously qualitative phenomena in a human-aligned way. This new paradigm promises to accelerate ALife research beyond what is possible through human ingenuity alone.
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://pub.sakana.ai/asal_blog_assets/teaser.png" alt="Image 1" style="width: 48%;">
+  <img src="https://pub.sakana.ai/asal_blog_assets/methods_figure.png" alt="Image 2" style="width: 48%;">
+</div>
 
 ## Repo Description
 This repo contains a minimalistic implementation of ASAL to get you started ASAP.
