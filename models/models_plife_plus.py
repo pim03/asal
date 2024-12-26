@@ -61,8 +61,7 @@ class ParticleLifePlus():
         )
 
     def default_params(self, rng):
-        rng, _rng = split(rng)
-        alpha = self.plife_net.init(_rng, jnp.zeros((self.n_colors, )), jnp.ones((self.n_colors, )))
+        alpha = self.plife_net.init(rng, jnp.zeros((self.n_colors, )), jnp.ones((self.n_colors, )))
         return dict(alpha=alpha)
         
     def init_state(self, rng, params):

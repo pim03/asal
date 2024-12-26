@@ -5,7 +5,6 @@ from collections import defaultdict
 from functools import partial
 
 import evosax
-import imageio
 import jax
 import jax.numpy as jnp
 import matplotlib.colors as mcolors
