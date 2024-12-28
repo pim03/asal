@@ -11,8 +11,10 @@ Automating the Search for Artificial Life with Foundation Models
 <p align="center">
   📝 <a href="https://sakana.ai/asal">Blog</a> |
   🌐 <a href="https://asal.sakana.ai/">Paper</a> |
-  📄 <a href="https://arxiv.org/abs/2412.17799">PDF</a> |
-  💻 <a href="https://colab.research.google.com/github/SakanaAI/asal/blob/main/asal.ipynb">Google Colab</a>
+  📄 <a href="https://arxiv.org/abs/2412.17799">PDF</a>
+</p>
+<p align="center">
+<a href="https://colab.research.google.com/github/SakanaAI/asal/blob/main/asal.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 </p>
 
 [Akarsh Kumar](https://x.com/akarshkumar0101) $^{1}$ $^2$, [Chris Lu](https://x.com/_chris_lu_) $^{3}$, [Louis Kirsch](https://x.com/LouisKirschAI) $^{4}$, [Yujin Tang](https://x.com/yujin_tang) $^2$, [Kenneth O. Stanley](https://x.com/kenneth0stanley) $^5$, [Phillip Isola](https://x.com/phillip_isola) $^1$, [David Ha](https://x.com/hardmaru) $^2$
