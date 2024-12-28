@@ -9,11 +9,10 @@
 Automating the Search for Artificial Life with Foundation Models
 </h1>
 <p align="center">
-  📝 <a href="https://sakana.ai/asal">[Blog]</a>
-  🌐 <a href="https://asal.sakana.ai/">[Paper]</a> |
-  📄 <a href="https://arxiv.org/abs/2412.17799">[PDF]</a> |
-  <!-- 💻 <a href="Google Colab">[Google Colab (coming soon)]</a> | -->
-  💻 Google Colab (coming soon)
+  📝 <a href="https://sakana.ai/asal">Blog</a> |
+  🌐 <a href="https://asal.sakana.ai/">Paper</a> |
+  📄 <a href="https://arxiv.org/abs/2412.17799">PDF</a> |
+  💻 <a href="https://colab.research.google.com/github/SakanaAI/asal/blob/main/asal.ipynb">Google Colab</a>
 </p>
 
 [Akarsh Kumar](https://x.com/akarshkumar0101) $^{1}$ $^2$, [Chris Lu](https://x.com/_chris_lu_) $^{3}$, [Louis Kirsch](https://x.com/LouisKirschAI) $^{4}$, [Yujin Tang](https://x.com/yujin_tang) $^2$, [Kenneth O. Stanley](https://x.com/kenneth0stanley) $^5$, [Phillip Isola](https://x.com/phillip_isola) $^1$, [David Ha](https://x.com/hardmaru) $^2$
@@ -32,20 +31,46 @@ With the recent Nobel Prize awarded for radical advances in protein discovery, f
 This repo contains a minimalistic implementation of ASAL to get you started ASAP.
 Everything is implemented in the [Jax framework](https://github.com/jax-ml/jax), making everything end-to-end jittable and very fast.
 
+
+The important code is here:
+- [foundation_models/__init__.py](foundation_models/__init__.py) has the code to create a foundation model.
+- [substrates/__init__.py](substrates/__init__.py) has the code to create a substrate.
+- [rollout.py](rollout.py) has the code to rollout a simulation efficiently
+
+Here is some minimal code to sample some random simulation parameters and run the simulation and evaluate how open-ended it is:
+```python
+import substrates
+import foundation_models
+from rollout import rollout_simulation
+import asal_metrics
+
+fm = foundation_models.create_foundation_model('clip')
+substrate = substrates.create_substrate('lenia')
+rollout_fn = partial(rollout_simulation, s0=None, substrate=substrate, fm=fm, rollout_steps=substrate.rollout_steps, time_sampling=8, img_size=224, return_state=False) # create the rollout function
+rollout_fn = jax.jit(rollout_fn) # jit for speed
+# now you can use rollout_fn as you need...
+rng = jax.random.PRNGKey(0)
+params = substrate.default_params(rng) # sample random parameters
+rollout_data = rollout_fn(rng, params)
+rgb = rollout_data['rgb'] # shape: (8, 224, 224, 3)
+z = rollout_data['z'] # shape: (8, 512)
+oe_score = asal_metrics.calc_open_endedness_score(z) # shape: ()
+```
+
 We have already implemented the following ALife substrates:
-- [Lenia](https://en.wikipedia.org/wiki/Lenia)
-- [Boids](https://en.wikipedia.org/wiki/Boids)
-- [Particle Life](https://www.youtube.com/watch?v=scvuli-zcRc)
-- Particle Life++
+- 'lenia': [Lenia](https://en.wikipedia.org/wiki/Lenia)
+- 'boids': [Boids](https://en.wikipedia.org/wiki/Boids)
+- 'plife': [Particle Life](https://www.youtube.com/watch?v=scvuli-zcRc)
+- 'plife_plus': Particle Life++
   - (Particle Life with changing color dynamics)
-- [Particle Lenia](https://google-research.github.io/self-organising-systems/particle-lenia/)
-- Discrete Neural Cellular Automata
-- [Continuous Neural Cellular Automata](https://distill.pub/2020/growing-ca/)
-- [Game of Life/Life-Like Cellular Automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton)
+- 'plenia': [Particle Lenia](https://google-research.github.io/self-organising-systems/particle-lenia/)
+- 'dnca': Discrete Neural Cellular Automata
+- 'nca_d1': [Continuous Neural Cellular Automata](https://distill.pub/2020/growing-ca/)
+- 'gol': [Game of Life/Life-Like Cellular Automata](https://en.wikipedia.org/wiki/Life-like_cellular_automaton)
 
-You can find these substrates at [models/](models/)
+You can find the code for these substrates at [substrates/](substrates/)
 
-The main files to run ASAL are the following:
+The main files to run the entire ASAL pipeline are the following:
 - [main_opt.py](main_opt.py)
   - Run this for supervised target and open-endedness
   - Search algorithm: Sep-CMA-ES (from evosax)
@@ -58,14 +83,14 @@ The main files to run ASAL are the following:
 
 ## Running on Google Colab
 <!-- Check out the [Google Colab](here). -->
-Coming soon!
+https://colab.research.google.com/github/SakanaAI/asal/blob/main/asal.ipynb
 
 ## Running Locally
 ### Installation 
 
 To run this project locally, you can start by cloning this repo.
 ```sh
-git clone git@github.com:SakanaAI/asal.git
+git clone https://github.com/SakanaAI/asal.git
 ```
 Then, set up the python environment with conda:
 ```sh
