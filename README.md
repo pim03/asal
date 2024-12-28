@@ -42,6 +42,8 @@ The important code is here:
 
 Here is some minimal code to sample some random simulation parameters and run the simulation and evaluate how open-ended it is:
 ```python
+import jax
+from functools import partial
 import substrates
 import foundation_models
 from rollout import rollout_simulation
