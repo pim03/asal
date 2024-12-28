@@ -35,7 +35,7 @@ Everything is implemented in the [Jax framework](https://github.com/jax-ml/jax),
 The important code is here:
 - [foundation_models/__init__.py](foundation_models/__init__.py) has the code to create a foundation model.
 - [substrates/__init__.py](substrates/__init__.py) has the code to create a substrate.
-- [rollout.py](rollout.py) has the code to rollout a simulation efficiently
+- [rollout.py](rollout.py) has the code to rollout a simulation efficiently.
 
 Here is some minimal code to sample some random simulation parameters and run the simulation and evaluate how open-ended it is:
 ```python
@@ -80,6 +80,8 @@ The main files to run the entire ASAL pipeline are the following:
 - [main_sweep_gol.py](main_sweep_gol.py)
   - Run this for open-endedness in Game of Life substrate (b/c discrete search space)
   - Search algorithm: brute force search
+
+[asal.ipynb](asal.ipynb) goes through everything you need to know.
 
 ## Running on Google Colab
 <!-- Check out the [Google Colab](here). -->
