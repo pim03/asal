@@ -38,6 +38,7 @@ The important code is here:
 - [foundation_models/__init__.py](foundation_models/__init__.py) has the code to create a foundation model.
 - [substrates/__init__.py](substrates/__init__.py) has the code to create a substrate.
 - [rollout.py](rollout.py) has the code to rollout a simulation efficiently.
+- [asal_metrics.py](asal_metrics.py) has the code to compute the metrics from ASAL.
 
 Here is some minimal code to sample some random simulation parameters and run the simulation and evaluate how open-ended it is:
 ```python
