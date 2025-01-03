@@ -3,7 +3,6 @@ import jax.numpy as jnp
 from jax.random import split
 
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 from einops import repeat, rearrange
@@ -13,10 +12,10 @@ from functools import partial
 import flax.linen as nn
 from einops import rearrange, reduce, repeat
 
-from create_sim import FlattenSimulationParameters
+from . import FlattenSimulationParameters
 from .boids import Boids
 
-class MushyBoids():
+class BoidsCompeting():
     def __init__(self, n_boids, k_sims, space_size=1., init_dist='random', colors='bb3e03-0a9396-001219-e9d8a6-9b2226-94d2bd-ee9b00-ca6702-005f73-ae2012'):
         self.n_boids = n_boids
         self.k_sims = k_sims
