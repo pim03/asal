@@ -90,7 +90,9 @@ The main files to run the entire ASAL pipeline are the following:
 
 ## Running on Google Colab
 <!-- Check out the [Google Colab](here). -->
-https://colab.research.google.com/github/SakanaAI/asal/blob/main/asal.ipynb
+Check out the Google Colab [here](https://colab.research.google.com/github/SakanaAI/asal/blob/main/asal.ipynb)!
+
+<a href="https://colab.research.google.com/github/SakanaAI/asal/blob/main/asal.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 ## Running Locally
 ### Installation 
@@ -114,8 +116,22 @@ However, if you want GPU acceleration (trust me, you do), please [manually insta
 ### Running ASAL
 Check out [asal.ipynb](asal.ipynb) to learn how to run the files and visualize the results.
 
+### Loading Our Dataset of Simulations
+You can view our dataset of simulations at
+- https://pub.sakana.ai/asal/data/illumination_poster_lenia.png
+- https://pub.sakana.ai/asal/data/illumination_poster_boids.png
+and find the simulation parameters at
+- https://pub.sakana.ai/asal/data/illumination_lenia.npz
+- https://pub.sakana.ai/asal/data/illumination_boids.npz
+- https://pub.sakana.ai/asal/data/illumination_plife.npz
+- https://pub.sakana.ai/asal/data/sweep_gol.npz
+
+Directions on how to load these simulations are shown in [asal.ipynb](asal.ipynb).
+
 ## Reproducing Results from the Paper
-Coming soon!
+Everything you need is already in this repo.
+
+If, for some reason, you want to see more code and see what went into the experimentation that led to the creation of ASAL, then check out [this repo](https://github.com/SakanaAI/nca-alife).
   
 ## Bibtex Citation
 To cite our work, you can use the following:

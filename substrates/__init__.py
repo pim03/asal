@@ -51,6 +51,7 @@ def create_substrate(substrate_name):
         substrate = NCA(grid_size=128, d_state=3, p_drop=0.5, dt=0.1)
     elif substrate_name=='gol':
         substrate = GameOfLife(grid_size=64)
+        rollout_steps = 1024
     else:
         raise ValueError(f"Unknown substrate name: {substrate_name}")
     substrate.name = substrate_name
