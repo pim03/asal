@@ -21,6 +21,12 @@ def conv2d_3x3_sum(x):
             padding='VALID',
             dimension_numbers=('NCHW', 'OIHW', 'NCHW'))[0, 0]
 
+"""
+The Game of Life / Life-Like substrate.
+The parameter value is integer and ranges between [0, 2**18).
+The integer encodes 18 bits which dictates the rule from the life-like substrate.
+Game of life is encoded by parameters value 6152.
+"""
 class GameOfLife():
     def __init__(self, grid_size=64):
         self.grid_size = grid_size

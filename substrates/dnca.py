@@ -20,6 +20,10 @@ class DNCANetwork(nn.Module):
         return x
 
 
+"""
+The Discrete NCA substrate.
+This substrate models a grid of integer values and updates them using a stochastic neural cellular automata.
+"""
 class DNCA():
     def __init__(self, grid_size=64, d_state=8, n_groups=1, identity_bias=0., temperature=1., color_map='fixed'):
         self.grid_size = grid_size

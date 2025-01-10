@@ -15,6 +15,9 @@ from einops import rearrange, reduce, repeat
 from . import FlattenSimulationParameters
 from .boids import Boids
 
+"""
+This is the code for simulating the competition between different boids species as shown in https://sakana.ai/asal/.
+"""
 class BoidsCompeting():
     def __init__(self, n_boids, k_sims, space_size=1., init_dist='random', colors='bb3e03-0a9396-001219-e9d8a6-9b2226-94d2bd-ee9b00-ca6702-005f73-ae2012'):
         self.n_boids = n_boids

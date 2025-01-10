@@ -10,6 +10,9 @@ from einops import repeat, rearrange
 from functools import partial
 
 # NOTE: the particle space is [0, 1]
+"""
+The Particle Life substrate from https://www.youtube.com/watch?v=scvuli-zcRc.
+"""
 class ParticleLife():
     def __init__(self, n_particles=5000, n_colors=6, n_dims=2, x_dist_bins=7,
                  beta=0.3, alpha=0., mass=0.1,

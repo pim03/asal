@@ -30,6 +30,11 @@ class PLifeNetwork(nn.Module):
 
 
 # NOTE: the particle space is [0, 1]
+"""
+Our custom Particle Life ++ substrate.
+It allows for the "colors" of the particles to change according to the other particles.
+The change dynamics is controlled by a neural network.
+"""
 class ParticleLifePlus():
     def __init__(self, n_particles=5000, n_colors=6, n_dims=2, x_dist_bins=7,
                  beta=0.3, alpha=0., mass=0.1,

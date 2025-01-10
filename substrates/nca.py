@@ -18,6 +18,9 @@ class NCANetwork(nn.Module):
         return x
 
 
+"""
+The continuous Neural Cellular Automata substrate.
+"""
 class NCA():
     def __init__(self, grid_size=64, d_state=16, p_drop=0.0, dt=0.01):
         self.grid_size = grid_size

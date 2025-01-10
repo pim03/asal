@@ -5,6 +5,9 @@ from jax.random import split
 from matplotlib import colors as mcolors
 from .gol import GameOfLife
 
+"""
+This is the code for simulating the competition between different game of life rules as shown in https://sakana.ai/asal/.
+"""
 class GameOfLifeCompeting():
     def __init__(self, k_sims=4, grid_size=128, double_step=True,
                  colors='448aff-1565c0-009688-8bc34a-ffc107-ff9800-f44336-ad1457-448aff-1565c0-009688-8bc34a-ffc107-ff9800-f44336-ad1457'):

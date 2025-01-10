@@ -11,6 +11,10 @@ from .lenia_impl import Lenia as LeniaImpl
 def inv_sigmoid(x):
     return jnp.log(x) - jnp.log1p(-x)
 
+"""
+The Lenia substrate.
+The implementation of Lenia is from https://github.com/maxencefaldor/Leniabreeder/tree/main/lenia.
+"""
 class Lenia():
     def __init__(self, grid_size=128, center_phenotype=True, phenotype_size=48, start_pattern="5N7KKM", clip1=jnp.inf, clip2=jnp.inf):
         self.grid_size = grid_size

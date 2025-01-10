@@ -72,6 +72,9 @@ def show_lenia(params, points, extent, w=400, show_UG=False, show_cmap=True):
   return vis
 
 
+"""
+The Particle Lenia substrate.
+"""
 class ParticleLenia():
     def __init__(self, n_particles=200, dt=0.1):
         self.n_particles = n_particles

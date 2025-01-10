@@ -42,6 +42,11 @@ def get_rotation_mats(v):
     local2global = jnp.array([[u, -v, 0], [v, u, 0], [0, 0, 1]])
     return global2local, local2global
 
+"""
+The Boids substrate.
+Each boid sees its neighbors in its local frame of reference and is permutation invariant to the order of the neighbors.
+It makes a decision to turn left or right based on the neighbors' positions and velocities.
+"""
 class Boids():
     def __init__(self, n_boids=64, n_nbrs=16, visual_range=0.1, speed=0.5,
                  controller='network',
