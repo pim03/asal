@@ -1,6 +1,7 @@
 # import os
 # os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+import jax
 import jax.numpy as jnp
 from einops import rearrange
 from transformers import AutoProcessor, FlaxCLIPModel
