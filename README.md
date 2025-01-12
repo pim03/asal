@@ -117,10 +117,11 @@ However, if you want GPU acceleration (trust me, you do), please [manually insta
 Check out [asal.ipynb](asal.ipynb) to learn how to run the files and visualize the results.
 
 ### Loading Our Dataset of Simulations
-You can view our dataset of simulations at
-- https://pub.sakana.ai/asal/data/illumination_poster_lenia.png
-- https://pub.sakana.ai/asal/data/illumination_poster_boids.png
-and find the simulation parameters at
+You can view our dataset of simulations at:
+- [Lenia Dataset](https://pub.sakana.ai/asal/data/illumination_poster_lenia.png)
+- [Boids Dataset](https://pub.sakana.ai/asal/data/illumination_poster_boids.png)
+
+You can download the datasets from:
 - https://pub.sakana.ai/asal/data/illumination_lenia.npz
 - https://pub.sakana.ai/asal/data/illumination_boids.npz
 - https://pub.sakana.ai/asal/data/illumination_plife.npz
