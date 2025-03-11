@@ -1,5 +1,5 @@
 # all of this code is from https://github.com/maxencefaldor/Leniabreeder/tree/main/lenia
-
+import matplotlib.pyplot as plt
 
 patterns = {}
 
@@ -70,6 +70,70 @@ patterns["5N7KKM_g"] = {"name": "Aquarium (swarm, gyrating)", "R": 12, "T": 2,
 patterns["5N7KKM_2"]["kernels"] = patterns["5N7KKM"]["kernels"]
 patterns["5N7KKM_g"]["kernels"] = patterns["5N7KKM"]["kernels"]
 
+
+#### MY CHANGES
+from scipy.fftpack import fft2, ifft2, fftshift
+import numpy as np
+
+Ain = np.load('/Users/joanapimenta/Desktop/PIC/asal/substrates/input_gauss.npy')
+Ain = Ain[..., None]  # Ensure it is 3D
+Ain = np.abs(Ain)
+Ain = Ain.tolist()
+
+Np = 128
+Niter = 1000#00000
+Nstep_plot = 1
+
+x = np.linspace(-1, 1, Np)
+y = x
+X, Y = np.meshgrid(x, y)
+RHO = np.sqrt(X**2 + Y**2)
+PHI = np.arctan2(Y, X)
+
+# Kernel parameters
+w_K = 0.04
+K = (RHO / w_K * np.sqrt(2)) * np.exp(-RHO**2 / (w_K)**2)
+K /= np.sum(K)  # Normalize kernel
+fftK = fft2(K)
+
+# Kernel parameters
+w_K = 0.04  # Width of Gaussian kernel
+r = 1.0     # Approximate radius (you can tweak this)
+m = 0.5     # Mean growth
+s = 0.15    # Standard deviation
+h = 1.0     # Kernel influence
+
+# Compute Gaussian Kernel
+Np = 128
+x = np.linspace(-1, 1, Np)
+y = x
+X, Y = np.meshgrid(x, y)
+RHO = np.sqrt(X**2 + Y**2)
+
+K = (RHO / w_K * np.sqrt(2)) * np.exp(-RHO**2 / (w_K)**2)
+K /= np.sum(K)  # Normalize kernel
+fftK = fft2(K)
+
+
+patterns["gauss"] = {
+    "name": "gaussian beam", "R": 12, "T": 2, 
+    "cells": Ain,  # Now properly formatted
+    # "kernels": K,
+	"kernels": [{
+        "b": list(K.flatten()),  # Convert to 1D array
+        "r": r,  # Kernel radius
+        "m": m,  # Growth function mean
+        "s": s,  # Growth function standard deviation
+        "h": h,  # Kernel influence
+        "c0": 0,  # Source channel
+        "c1": 0   # Target channel
+    }]
+}
+
+# {"b": [1], "m": 0.22, "s": 0.0628, "h": 0.174, "r": 0.87, "c0": 0, "c1": 0}
+
+####
+
 from typing import Any
 from functools import partial
 from dataclasses import dataclass
@@ -97,7 +161,7 @@ growth = lambda x, mean, stdev: 2 * bell(x, mean, stdev) - 1
 @dataclass
 class ConfigLenia:
 	# Init pattern
-	pattern_id: str = "VT049W"
+	pattern_id: str = "gauss"
 
 	# World
 	world_size: int = 128
@@ -108,7 +172,7 @@ class ConfigLenia:
 
 	# Genotype
 	n_params_size: int = 3
-	n_cells_size: int = 32
+	n_cells_size: int = 128
 
 
 class Lenia:
@@ -133,6 +197,9 @@ class Lenia:
 		# create empty world and place cells
 		A = jnp.zeros((self._config.world_size, self._config.world_size, self.n_channel))  # (y, x, c,)
 		A = A.at[mid-cx//2:mid+cx-cx//2, mid-cy//2:mid+cy-cy//2, :].set(scaled_cells)
+
+		A = cells
+
 		return A
 
 	def load_pattern(self, pattern):
@@ -165,13 +232,39 @@ class Lenia:
 		nK = K / jnp.sum(K, axis=(0, 1), keepdims=True)  # (y, x, k,), normalized kernels
 		fK = jnp.fft.fft2(jnp.fft.fftshift(nK, axes=(0, 1)), axes=(0, 1))  # (y, x, k,), FFT of kernels
 
+		print('shape do K original',K.shape)
+		print('shape do fk original', fK.shape)
+
+		# Np = 128
+		# Niter = 1000#00000
+		# Nstep_plot = 1
+
+		# x = np.linspace(-1, 1, Np)
+		# y = x
+		# X, Y = np.meshgrid(x, y)
+		# RHO = np.sqrt(X**2 + Y**2)
+		# PHI = np.arctan2(Y, X)
+
+		# # Kernel parameters
+		# w_K = 0.04
+		# K = (RHO / w_K * np.sqrt(2)) * np.exp(-RHO**2 / (w_K)**2)
+		# K /= np.sum(K)  # Normalize kernel
+		# fK = fft2(K)
+
+		# print('shape do K novo',K.shape)
+		# print('shape do fk novo', fftK.shape)
+
 		# pad pattern cells into initial cells (to be put in genotype)
 		cy, cx = cells.shape[0], cells.shape[1]
 		py, px = self._config.n_cells_size - cy, self._config.n_cells_size - cx
 		init_cells = jnp.pad(cells, pad_width=((py//2, py-py//2), (px//2, px-px//2), (0,0)), mode='constant')  # (e, e, c,)
 
 		# create world from initial cells
-		A = self.create_world_from_cells(init_cells)
+		A = self.create_world_from_cells(init_cells) #JOANA instead of using this function -> use directly what comes 
+		# A = pattern['cells']
+
+		print('shape do A original', A.shape)
+		# print('shape do A novo', patterns['gauss']['cells'].shape)
 
 		# pack initial data
 		init_carry = Carry(
@@ -182,6 +275,7 @@ class Lenia:
 		)
 		init_genotype = jnp.concatenate([init_params.flatten(), init_cells.flatten()])
 		other_asset = Others(D, K, cells, init_cells)
+		
 		return init_carry, init_genotype, other_asset
 
 	def express_genotype(self, carry, genotype):
@@ -198,6 +292,7 @@ class Lenia:
 	@partial(jax.jit, static_argnames=("self", "phenotype_size", "center_phenotype", "record_phenotype",))
 	def step(self, carry: Carry, unused: Any, phenotype_size, center_phenotype, record_phenotype):
 		# unpack data from last step
+		
 		A = carry.world
 		m, s, h = carry.param
 		fK, X, reshape_c_k, reshape_k_c, R, T = carry.asset
