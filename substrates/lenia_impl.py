@@ -75,7 +75,7 @@ patterns["5N7KKM_g"]["kernels"] = patterns["5N7KKM"]["kernels"]
 from scipy.fftpack import fft2, ifft2, fftshift
 import numpy as np
 
-Ain = np.load('/Users/joanapimenta/Desktop/PIC/asal/substrates/input_gauss.npy')
+Ain = np.load('substrates/input_gauss.npy')
 Ain = Ain[..., None]  # Ensure it is 3D
 Ain = np.abs(Ain)
 Ain = Ain.tolist()
