@@ -179,9 +179,11 @@ class Lenia:
 	def __init__(self, config: ConfigLenia):
 		self._config = config
 		self.pattern = patterns[self._config.pattern_id]
+		print('self.config pattern id',self._config.pattern_id )
 
 		# Genotype
 		self.n_kernel = len(self.pattern["kernels"])  # k, number of kernels
+		print('numero de kernels: ', self.n_kernel)
 		self.n_channel = len(self.pattern["cells"])  # c, number of channels
 		self.n_params = self._config.n_params_size * self.n_kernel  # p*k, number of parameters inside genotype
 		self.n_cells = self._config.n_cells_size * self._config.n_cells_size * self.n_channel  # e*e*c, number of embryo cells inside genotype
