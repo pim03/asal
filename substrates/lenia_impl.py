@@ -210,6 +210,7 @@ class Lenia:
 	def load_pattern(self, pattern):
 		# unpack pattern data
 		cells = jnp.transpose(jnp.asarray(pattern['cells']), axes=[1, 2, 0])  # (y, x, c,)
+		cells = pattern['cells']
 		kernels = pattern['kernels']
 		R = pattern['R'] * self._config.world_scale
 		T = pattern['T']
@@ -243,7 +244,7 @@ class Lenia:
 		cy, cx = cells.shape[0], cells.shape[1]
 		py, px = self._config.n_cells_size - cy, self._config.n_cells_size - cx
 		init_cells = jnp.pad(cells, pad_width=((py//2, py-py//2), (px//2, px-px//2), (0,0)), mode='constant')  # (e, e, c,)
-		init_cells = patterns["gauss"]['cells']
+		# init_cells = patterns["gauss"]['cells']
 
 		print("Shape of cells before passing to create_world_from_cells:", init_cells.shape)
 
