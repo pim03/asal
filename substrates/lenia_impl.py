@@ -106,11 +106,12 @@ h = 1.0     # Kernel influence
 
 # Compute Gaussian Kernel
 Np = 128
+
 x = np.linspace(-1, 1, Np)
 y = x
 X, Y = np.meshgrid(x, y)
 RHO = np.sqrt(X**2 + Y**2)
-
+w_K = 0.04
 K = (RHO / w_K * np.sqrt(2)) * np.exp(-RHO**2 / (w_K)**2)
 K /= np.sum(K)  # Normalize kernel
 fftK = fft2(K)
@@ -130,6 +131,50 @@ patterns["gauss"] = {
         "c1": 0   # Target channel
     }]
 }
+
+# n_shells = 100
+# rs = np.linspace(0, r, n_shells)
+# b = np.exp(-((rs - r)/s)**2 / 2)   # 1D Gaussian centering at r
+# b /= b.sum()
+# patterns["gauss"]["kernels"] = [{
+#     "b": b.tolist(),
+#     "r": r,
+#     "m": m,
+#     "s": s,
+#     "h": h,
+#     "c0": 0, "c1": 0
+# }]
+
+# import numpy as np
+
+# Np = 128  # e.g. 128
+# x  = np.linspace(-1, 1, Np)
+# X, Y = np.meshgrid(x, x)
+# RHO  = np.sqrt(X**2 + Y**2)
+
+# r = 0.7    # desired ring radius (in normalized units)
+# s = 0.1    # thickness of the ring
+
+# # a continuous Gaussian shell around radius r
+# K2d = np.exp(-((RHO - r)/s)**2 / 2)
+# K2d /= K2d.sum()
+
+Np = 128
+
+x = np.linspace(-1, 1, Np)
+X, Y = np.meshgrid(x, x)
+RHO = np.sqrt(X**2 + Y**2)
+PHI = np.arctan2(Y, X)
+
+# Kernel parameters
+w_K = 0.04
+K = (RHO / w_K * np.sqrt(2)) * np.exp(-RHO**2 / (w_K)**2)
+K /= np.sum(K)  # Normalize kernel
+fftK = fft2(K)
+
+patterns["gauss"]["K2d"] = K  # store it alongside your other pattern data
+
+
 
 
 
@@ -232,11 +277,28 @@ class Lenia:
 		mid = self._config.world_size // 2
 		X = jnp.mgrid[-mid:mid, -mid:mid] / R  # (d, y, x,), coordinates
 		D = jnp.linalg.norm(X, axis=0)  # (y, x,), distance from origin
-		Ds = [D * len(k['b']) / k['r'] for k in kernels]  # (y, x,)*k
-		Ks = [(D<len(k['b'])) * jnp.asarray(k['b'])[jnp.minimum(D.astype(int),len(k['b'])-1)] * bell(D%1, 0.5, 0.15) for D,k in zip(Ds, kernels)]  # (x, y,)*k
-		K = jnp.dstack(Ks)  # (y, x, k,), kernels
-		nK = K / jnp.sum(K, axis=(0, 1), keepdims=True)  # (y, x, k,), normalized kernels
-		fK = jnp.fft.fft2(jnp.fft.fftshift(nK, axes=(0, 1)), axes=(0, 1))  # (y, x, k,), FFT of kernels
+
+		##### COMMENTED THE NEXT 5 LINES TO BYPASS KERNEL FORMATION
+		# Ds = [D * len(k['b']) / k['r'] for k in kernels]  # (y, x,)*k
+		# Ks = [(D<len(k['b'])) * jnp.asarray(k['b'])[jnp.minimum(D.astype(int),len(k['b'])-1)] * bell(D%1, 0.5, 0.15) for D,k in zip(Ds, kernels)]  # (x, y,)*k
+		# K = jnp.dstack(Ks)  # (y, x, k,), kernels
+		# nK = K / jnp.sum(K, axis=(0, 1), keepdims=True)  # (y, x, k,), normalized kernels
+		# fK = jnp.fft.fft2(jnp.fft.fftshift(nK, axes=(0, 1)), axes=(0, 1))  # (y, x, k,), FFT of kernels
+
+		    # --- REPLACE WITH this ---
+		# pull in the precomputed 2D donut from the pattern:
+		    # --- your continuous 2D donut becomes K ---
+		K = jnp.asarray(pattern["K2d"])[..., None]     # shape (y, x, 1)
+
+		# normalize exactly as Lenia expects
+		nK = K / jnp.sum(K, axis=(0,1), keepdims=True)  # shape (y, x, 1)
+
+		# Fourier‐space kernel
+		fK = jnp.fft.fft2(
+			jnp.fft.fftshift(nK, axes=(0,1)),
+			axes=(0,1)
+		)
+
 
 		print('shape do K original',K.shape)
 		print('shape do fk original', fK.shape)
@@ -264,6 +326,17 @@ class Lenia:
 		)
 		init_genotype = jnp.concatenate([init_params.flatten(), init_cells.flatten()])
 		other_asset = Others(D, K, cells, init_cells)
+
+		plt.matshow(A[:,:,0])
+		plt.title('A')
+		plt.savefig('A')
+		plt.show()
+
+		plt.matshow(K[:,:,0])
+		plt.title('kernel')
+		plt.savefig('kernel')
+		plt.show()
+
 		
 		return init_carry, init_genotype, other_asset
 
